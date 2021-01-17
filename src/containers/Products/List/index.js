@@ -28,12 +28,16 @@ class ProductList extends Component {
             products: {
                 data: [],
             },
+            productName: "",
+            urlSegment: "",
+            sku: "",
         };
         this.searchProducts = this.searchProducts.bind(this);
         this.handlePerPage = this.handlePerPage.bind(this);
         this.handlePage = this.handlePage.bind(this);
         this.handlePaginatePrev = this.handlePaginatePrev.bind(this);
         this.handlePaginateNext = this.handlePaginateNext.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
     }
 
     handlePerPage(value, search = true) {
@@ -66,6 +70,11 @@ class ProductList extends Component {
         event.preventDefault();
     }
 
+    handleSearch(event) {
+        event.preventDefault();
+        this.searchProducts();
+    }
+
     handleShowUpdateModal(productId) {
         this.updateChild.setState({ id: productId }, () => {
             this.updateChild.getProduct(() => this.updateChild.setState({ show: true }));
@@ -96,11 +105,15 @@ class ProductList extends Component {
     }
 
     async searchProducts() {
-        const paginationQuery = `page=${this.state.page}&per_page=${this.state.perPage}`;
+        const paginationQuery = encodeURI(`page=${this.state.page}&per_page=${this.state.perPage}&filter[name]=${this.state.productName}&filter[url_segment]=${this.state.urlSegment}&filter[sku]=${this.state.sku}`);
         const url = `${process.env.REACT_APP_PRODUCTS_API_URI}/api/v1/products?${paginationQuery}`;
         const response = await fetch(url);
         const data = await response.json();
         this.setState({ products: data });
+    }
+
+    handleFormChange(event) {
+        this.setState({ [event.target.id]: event.target.value });
     }
 
     render() {
@@ -124,11 +137,35 @@ class ProductList extends Component {
                             </center>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col md={{ span: 8, offset: 2 }}>
-                            <center>
-                                <Button variant="primary" onClick={() => this.createChild.setState({ show: true })}>Create Product</Button>
-                            </center>
+                    <Row className="search-container">
+                        <Col md={{ span: 12 }}>
+                            <p>Search Parameters</p>
+                            <Form onSubmit={(e) => { this.handleSearch(e); }}>
+                                <Form.Row>
+                                    <Col>
+                                        <Form.Group controlId="productName">
+                                            <Form.Control placeholder="Product name" onChange={this.handleFormChange} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group controlId="urlSegment">
+                                            <Form.Control placeholder="URL Segment" onChange={this.handleFormChange} />
+                                        </Form.Group>
+                                    </Col>
+                                </Form.Row>
+                                <br />
+                                <Form.Row>
+                                    <Col>
+                                        <Form.Group controlId="sku">
+                                            <Form.Control placeholder="SKU" onChange={this.handleFormChange} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Button type="submit" variant="success">Search</Button>
+                                        <Button variant="primary" onClick={() => this.createChild.setState({ show: true })}>Create Product</Button>
+                                    </Col>
+                                </Form.Row>
+                            </Form>
                             <br />
                         </Col>
                     </Row>

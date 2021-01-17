@@ -192,7 +192,7 @@ class ProductList extends Component {
                                                 <td>{product.price}</td>
                                                 <td>{moment(product.created_at).format('MM/DD/YYYY HH:mm')}</td>
                                                 <td>
-                                                    <Button size="sm" variant="primary" as={NavLink} to={`products/${product.id}`}>View</Button>
+                                                    <Button size="sm" variant="primary" as={NavLink} to={`products/${product.url_segment}`}>View</Button>
                                                     <Button size="sm" variant="warning" onClick={() => this.handleShowUpdateModal(product.id)}>Edit</Button>
                                                     <Button size="sm" variant="danger" onClick={() => this.handleDeleteProduct(product.id)}>Delete</Button>
                                                 </td>

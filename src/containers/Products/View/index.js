@@ -13,7 +13,7 @@ class ProductView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: parseInt(props.match.params.id, 10),
+            id: props.match.params.id,
             product: {}
         };
     }
@@ -23,7 +23,7 @@ class ProductView extends Component {
     }
 
     async getProduct() {
-        const url = `${process.env.REACT_APP_PRODUCTS_API_URI}/api/v1/products/${this.state.id}`;
+        const url = `${process.env.REACT_APP_PRODUCTS_API_URI}/api/v1/products/url_segment/${this.state.id}`;
         const response = await fetch(url);
         const data = await response.json();
         this.setState({ product: data.data });
